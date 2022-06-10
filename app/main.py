@@ -1,7 +1,9 @@
 import os
 
+import requests
 import tweepy
 from dotenv import load_dotenv
+from loguru import logger
 
 load_dotenv()
 
@@ -17,4 +19,15 @@ client = tweepy.Client(
     access_token_secret=access_token_secret,
 )
 
-client.create_tweet(text="My first tweet", user_auth=True)
+wiki_random_url = "https://en.wikipedia.org/wiki/Special:Random"
+
+
+def tweet_random_article(client: tweepy.Client):
+
+    response = requests.get(wiki_random_url)
+    article_url = response.url
+    response = client.create_tweet(text=article_url, user_auth=True)
+    logger.info(response)
+
+
+tweet_random_article(client)
